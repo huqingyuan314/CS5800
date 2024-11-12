@@ -4,12 +4,11 @@ import java.util.*;
 class BinomialHeap {
   private Node head;
 
-  // Node class to represent each node in the heap
+  // Node class
   private static class Node {
     int key;
     int degree;
     Node parent, child, sibling;
-
     Node(int key) {
       this.key = key;
       this.degree = 0;
@@ -19,15 +18,16 @@ class BinomialHeap {
     }
   }
 
-  // Create a new empty heap
+  // Constructor: create a new empty heap
   public BinomialHeap() {
     head = null;
   }
 
-  // Make-heap: Create an empty binomial heap
+  // Make-heap: Initializes the heap to null
   public void makeHeap() {
     head = null;
   }
+
 
   // Insert a key into the binomial heap
   public void insert(int key) {
@@ -35,6 +35,7 @@ class BinomialHeap {
     tempHeap.head = new Node(key);
     head = union(head, tempHeap.head);
   }
+
 
   // Find the minimum value in the heap
   public int minimum() {
@@ -44,12 +45,13 @@ class BinomialHeap {
 
     int min = Integer.MAX_VALUE;
     Node temp = head;
-    while (temp != null) {
+    while (temp != null) {  // traverse the heap to find min
       min = Math.min(min, temp.key);
       temp = temp.sibling;
     }
     return min;
   }
+
 
   // Extract the minimum value from the heap
   public int extractMin() {
@@ -98,6 +100,7 @@ class BinomialHeap {
     return min;
   }
 
+
   // Union of two binomial heaps
   private Node union(Node h1, Node h2) {
     if (h1 == null) return h2;
@@ -111,7 +114,8 @@ class BinomialHeap {
 
     // Iterate through the merged list of roots
     while (next != null) {
-      if (curr.degree != next.degree || (next.sibling != null && next.sibling.degree == curr.degree)) {
+      if (curr.degree != next.degree || (next.sibling != null
+              && next.sibling.degree == curr.degree)) {
         prev = curr;
         curr = next;
       } else if (curr.key <= next.key) {
@@ -132,7 +136,7 @@ class BinomialHeap {
     return merged;
   }
 
-  // Merge two binomial heaps
+  // Helper method: Merge two binomial heaps
   private Node merge(Node h1, Node h2) {
     if (h1 == null) return h2;
     if (h2 == null) return h1;
@@ -169,7 +173,7 @@ class BinomialHeap {
     return head;
   }
 
-  // Link two binomial trees of the same degree
+  // Helper method: Link two binomial trees of the same degree
   private void link(Node y, Node z) {
     y.parent = z;
     y.sibling = z.child;
@@ -177,7 +181,8 @@ class BinomialHeap {
     z.degree++;
   }
 
-  // Decrease the key of a node
+
+  // Decrease the key of a node in the binomial heap
   public void decreaseKey(int oldKey, int newKey) {
     Node node = findNode(head, oldKey);
     if (node == null) {
@@ -190,19 +195,21 @@ class BinomialHeap {
 
     node.key = newKey;
 
-    // Bubble up the node if needed
+    // Bubble up within the tree if needed
     Node parent = node.parent;
     while (parent != null && node.key < parent.key) {
+      // Swap the keys of the node and its parent
       int temp = node.key;
       node.key = parent.key;
       parent.key = temp;
 
+      // Move up the tree
       node = parent;
       parent = node.parent;
     }
   }
 
-  // Find a node by key
+  // Helper method: Find a node by key recursively
   private Node findNode(Node root, int key) {
     if (root == null) return null;
     if (root.key == key) return root;
@@ -213,28 +220,73 @@ class BinomialHeap {
     return findNode(root.sibling, key);
   }
 
+
   // Delete a node by value
   public void delete(int key) {
     decreaseKey(key, Integer.MIN_VALUE);
     extractMin();
   }
 
-  // Print the binomial heap
+
+  // Print the binomial heap with structure and lines
   public void printHeap() {
+    System.out.println("Binomial Heap:");
     Node temp = head;
+    int treeIndex = 1;
+
     while (temp != null) {
-      printTree(temp);
+      System.out.println("Tree " + treeIndex++ + " (Degree " + temp.degree + "):");
+      printTree(temp, 0, true);
       temp = temp.sibling;
+      System.out.println();
     }
   }
 
-  // Print a binomial tree
-  private void printTree(Node node) {
+  // Recursive helper method to print each binomial tree with lines
+  private void printTree(Node node, int level, boolean isRoot) {
     if (node == null) return;
-    System.out.print(node.key + " ");
-    printTree(node.child);
-    printTree(node.sibling);
+
+    // Print leading spaces for indentation
+    for (int i = 0; i < level; i++) {
+      System.out.print("   ");
+    }
+
+    // Print node value and connect with lines if needed
+    if (!isRoot) {
+      System.out.print("|-- ");
+    }
+    System.out.println(node.key);
+
+    // Print the children of the current node with an additional indentation level
+    if (node.child != null) {
+      printChildTree(node.child, level + 1);
+    }
   }
+
+  // Helper method to recursively print children nodes with connecting lines
+  private void printChildTree(Node node, int level) {
+    while (node != null) {
+      // Print leading spaces for indentation
+      for (int i = 0; i < level; i++) {
+        System.out.print("   ");
+      }
+
+      // Print node with connector line
+      System.out.print("|-- ");
+      System.out.println(node.key);
+
+      // Print the subtree of this child node
+      if (node.child != null) {
+        printChildTree(node.child, level + 1);
+      }
+
+      // Move to the sibling node if it exists
+      node = node.sibling;
+    }
+  }
+
+
+  //////////////////////////////////////////
 
   public static void main(String[] args) {
     BinomialHeap bh = new BinomialHeap();
@@ -254,8 +306,12 @@ class BinomialHeap {
     System.out.println("Heap after extractMin:");
     bh.printHeap();
 
-    bh.decreaseKey(20, 3);
-    System.out.println("\nHeap after decreasing key 20 to 3:");
+    bh.decreaseKey(20, 6);
+    System.out.println("\nHeap after decreasing key 20 to 6:");
+    bh.printHeap();
+
+    bh.decreaseKey(30, 4);
+    System.out.println("\nHeap after decreasing key 30 to 4:");
     bh.printHeap();
 
     bh.delete(15);
