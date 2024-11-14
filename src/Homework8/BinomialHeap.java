@@ -4,11 +4,15 @@ import java.util.*;
 class BinomialHeap {
   private Node head;
 
+  // Find the minimum node and store it as a reference
+  private Node minNode;
+
   // Node class
   private static class Node {
     int key;
     int degree;
     Node parent, child, sibling;
+
     Node(int key) {
       this.key = key;
       this.degree = 0;
@@ -21,6 +25,7 @@ class BinomialHeap {
   // Constructor: create a new empty heap
   public BinomialHeap() {
     head = null;
+    minNode = null;  // Keep track of minimum node
   }
 
   // Make-heap: Initializes the heap to null
@@ -29,27 +34,25 @@ class BinomialHeap {
   }
 
 
-  // Insert a key into the binomial heap
+  // Insert a key into the binomial heap and update minNode
   public void insert(int key) {
     BinomialHeap tempHeap = new BinomialHeap();
-    tempHeap.head = new Node(key);
+    Node newNode = new Node(key);
+    tempHeap.head = newNode;
     head = union(head, tempHeap.head);
+
+    if (minNode == null || key < minNode.key) {
+      minNode = newNode;  // Update minNode reference
+    }
   }
 
 
   // Find the minimum value in the heap
   public int minimum() {
-    if (head == null) {
+    if (minNode == null) {
       throw new NoSuchElementException("Heap is empty.");
     }
-
-    int min = Integer.MAX_VALUE;
-    Node temp = head;
-    while (temp != null) {  // traverse the heap to find min
-      min = Math.min(min, temp.key);
-      temp = temp.sibling;
-    }
-    return min;
+    return minNode.key;
   }
 
 
@@ -97,6 +100,22 @@ class BinomialHeap {
     tempHeap.head = prevChild;
     head = union(head, tempHeap.head);
 
+    // Update the minNode reference
+    minNode = findMinNode();
+    return min;
+  }
+
+  // Helper method to find and set the minimum node
+  private Node findMinNode() {
+    Node temp = head;
+    Node min = head;
+
+    while (temp != null) {
+      if (temp.key < min.key) {
+        min = temp;
+      }
+      temp = temp.sibling;
+    }
     return min;
   }
 
@@ -207,6 +226,11 @@ class BinomialHeap {
       node = parent;
       parent = node.parent;
     }
+
+    // Update minNode if the new key is the smallest
+    if (minNode == null || node.key < minNode.key) {
+      minNode = node;
+    }
   }
 
   // Helper method: Find a node by key recursively
@@ -289,33 +313,55 @@ class BinomialHeap {
   //////////////////////////////////////////
 
   public static void main(String[] args) {
-    BinomialHeap bh = new BinomialHeap();
+    BinomialHeap bh1 = new BinomialHeap();
 
-    bh.insert(10);
-    bh.insert(20);
-    bh.insert(30);
-    bh.insert(5);
-    bh.insert(15);
+    // Insert
+    bh1.insert(5);
+    bh1.insert(10);
+    bh1.insert(15);
+    bh1.insert(20);
+    bh1.insert(30);
+    bh1.insert(40);
+    bh1.insert(50);
 
-    System.out.println("Heap after insertion:");
-    bh.printHeap();
+    System.out.println("Heap 1 after insertion:");
+    bh1.printHeap();
 
-    System.out.println("\nMinimum value: " + bh.minimum());
+    // Minimum
+    System.out.println("\nMinimum value: " + bh1.minimum());
 
-    System.out.println("\nExtract minimum: " + bh.extractMin());
-    System.out.println("Heap after extractMin:");
-    bh.printHeap();
+    // Extract-Min
+    System.out.println("\nExtract minimum: " + bh1.extractMin());
+    System.out.println("Heap 1 after extractMin:");
+    bh1.printHeap();
 
-    bh.decreaseKey(20, 6);
-    System.out.println("\nHeap after decreasing key 20 to 6:");
-    bh.printHeap();
+    // Decrease-Key
+    bh1.decreaseKey(20, 12);
+    System.out.println("\nHeap after decreasing key 20 to 12:");
+    bh1.printHeap();
 
-    bh.decreaseKey(30, 4);
-    System.out.println("\nHeap after decreasing key 30 to 4:");
-    bh.printHeap();
-
-    bh.delete(15);
+    // Delete
+    bh1.delete(15);
     System.out.println("\nHeap after deleting 15:");
-    bh.printHeap();
+    bh1.printHeap();
+
+
+    // Union
+    BinomialHeap bh2 = new BinomialHeap();
+    bh2.insert(25);
+    bh2.insert(35);
+    bh2.insert(45);
+    bh2.insert(55);
+    System.out.println("Heap 2 after insertion:");
+    bh2.printHeap();
+
+    // Perform union of heap1 and heap2
+    BinomialHeap unionHeap = new BinomialHeap();
+    unionHeap.head = bh1.union(bh1.head, bh2.head);
+
+    // Print the resulting union heap structure
+    System.out.println("\nUnion of Heap 1 and Heap 2:");
+    unionHeap.printHeap();
+
   }
 }
