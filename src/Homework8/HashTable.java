@@ -224,8 +224,6 @@ public class HashTable {
     hashTable.printHistogram();
 
 
-
-
 //    // Insert
 //    hashTable.insert("Qingyuan", 1);
 //    hashTable.listAllKeys();
