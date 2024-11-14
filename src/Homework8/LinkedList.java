@@ -1,25 +1,27 @@
 package Homework8;
 
-public class LinkedList2 {
+import java.util.Objects;
+
+public class LinkedList {
   Node head; // head node of the list
 
   // Node class to represent each element in the linked list
   static class Node {
-    int key;
-    String value;
+    String key;
+    int count;
     Node next;
 
     // Constructor to create a new node with key-value pair
-    Node(int key, String value) {
+    Node(String key, int count) {
       this.key = key;
-      this.value = value;
+      this.count = count;
       this.next = null;
     }
   }
 
   // Method to add a new node at the head of the list
-  public void add(int key, String value) {
-    Node newNode = new Node(key, value);
+  public void add(String key, int count) {
+    Node newNode = new Node(key, count);
 
     if (head == null) {
       head = newNode;
@@ -31,9 +33,9 @@ public class LinkedList2 {
   }
 
   // Method to remove a node with the specified key
-  public void remove(int key) {
+  public void remove(String key) {
     // Check if the head node is the one to remove
-    if (head != null && head.key == key) {
+    if (head != null && Objects.equals(head.key, key)) {
       head = head.next; // Move head to the next node
       return;
     }
@@ -53,7 +55,7 @@ public class LinkedList2 {
   public void display() {
     Node current = head;
     while (current != null) {
-      System.out.print("[" + current.key + ": " + current.value + "] -> ");
+      System.out.print("[" + current.key + ": " + current.count + "] -> ");
       current = current.next;
     }
     System.out.println("null");
@@ -62,26 +64,27 @@ public class LinkedList2 {
 
   // Test cases
   public static void main(String[] args) {
-    LinkedList2 list = new LinkedList2();
+    LinkedList list = new LinkedList();
 
     // Add elements with key-value pairs
-    list.add(1, "One");
-    list.add(2, "Two");
-    list.add(3, "Three");
-    list.add(4, "Four");
+    list.add("today", 1);
+    list.add("is", 1);
+    list.add("a", 1);
+    list.add("nice", 1);
+
 
     // Display list
     System.out.print("Linked List: ");
     list.display();
 
     // Add a node
-    list.add(5, "Five");
-    System.out.print("After adding key 5: ");
+    list.add("day", 1);
+    System.out.print("After adding a key 'day': ");
     list.display();
 
     // Remove an element by key
-    list.remove(3);
-    System.out.print("After removing key 3: ");
+    list.remove("today");
+    System.out.print("After removing key 'today': ");
     list.display();
   }
 }
