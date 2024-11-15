@@ -57,7 +57,7 @@ public class HashTable {
     insert(key, 1);
   }
 
-  // Find the count for a word
+  // Find a word
   public int find(String key) {
     int index = hashFunction(key);
     LinkedList.Node current = table[index].head;
@@ -97,7 +97,6 @@ public class HashTable {
   }
 
   // Process text file and insert or update words in the hash table
-// Process text file and insert or update words in the hash table
   public void processFile(String fileName) {
     try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
       String line;
@@ -116,7 +115,7 @@ public class HashTable {
     }
   }
 
-  // Output the hash table to a file
+  // Output the word counts to a file
   public void outputToFile(String fileName) {
     List<WordCount> wordCounts = new ArrayList<>();
 
@@ -124,10 +123,7 @@ public class HashTable {
     for (int i = 0; i < MAXHASH; i++) {
       LinkedList.Node current = table[i].head;
       while (current != null) {
-        // Only add entries that are alphabetic words
-        if (current.key.matches("^[a-zA-Z]+$")) {
-          wordCounts.add(new WordCount(current.key, current.count));
-        }
+        wordCounts.add(new WordCount(current.key, current.count));
         current = current.next;
       }
     }

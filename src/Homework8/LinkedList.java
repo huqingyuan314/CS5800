@@ -7,8 +7,8 @@ public class LinkedList {
 
   // Node class to represent each element in the linked list
   static class Node {
-    String key;
-    int count;
+    String key; // store the word
+    int count;  // store the number of times the word appears
     Node next;
 
     // Constructor to create a new node with key-value pair
